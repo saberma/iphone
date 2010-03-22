@@ -7,10 +7,11 @@
 //
 
 #import "UserAddController.h"
+#define labelWidth 80.0
 #define textWidth 150.0
 #define leftMargin  20.0
 #define topMargin  68.0
-#define textHeight  30.0
+#define textHeight  28.0
 
 
 @implementation UserAddController
@@ -27,11 +28,14 @@
 }
 */
 
-/*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView {
+ - (void)loadView {
+ //allocate the view
+ self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+ 
+ //set the view's background color
+ self.view.backgroundColor = [UIColor whiteColor];
 }
-*/
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -40,16 +44,17 @@
 	self.title = @"新增用户信息";
   
   //label
-  CGRect frame = CGRectMake(leftMargin, topMargin, textWidth, textHeight);
+  CGRect frame = CGRectMake(leftMargin, topMargin, labelWidth, textHeight);
   UILabel *aLabel = [[UILabel alloc] initWithFrame:frame];
   [aLabel setText:@"用户名"];
   self.nameLabel = aLabel;
   [aLabel release];
    
   //text
-  CGRect textFrame = CGRectMake(leftMargin + textWidth, topMargin, textWidth, textHeight);
+  CGRect textFrame = CGRectMake(leftMargin + labelWidth, topMargin, textWidth, textHeight);
   UITextField *aText = [[UITextField alloc] initWithFrame:textFrame];
   aText.backgroundColor = [UIColor whiteColor];
+  aText.borderStyle = UITextBorderStyleRoundedRect;
   aText.delegate = self;
   self.nameText = aText;
   [aText release];
