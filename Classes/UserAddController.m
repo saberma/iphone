@@ -90,6 +90,7 @@
 - (void)save {
   User *user = [[User alloc] init];
   [user setName:nameText.text];
+  [user setUploaded:[NSNumber numberWithInt:0]];
   [user save];
   [user release];
   

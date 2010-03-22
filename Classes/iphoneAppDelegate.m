@@ -7,7 +7,6 @@
 //
 
 #import "iphoneAppDelegate.h"
-#import "UserViewController.h"
 
 @implementation iphoneAppDelegate
 
@@ -38,10 +37,18 @@
 }
 
 - (void)run{
+	// Rails resource.
+	[ObjectiveResourceConfig setSite:@"http://192.168.1.191:3000/"];
+	[ObjectiveResourceConfig setResponseType:JSONResponse];
+  
   while (TRUE) {
+    NSLog(@"uploading");
     NSAutoreleasePool* myAutoreleasePool = [[NSAutoreleasePool alloc] init];
-    for (User *user in [User allObjects]) {
+    for (User *user in [User findByCriteria:@"where uploaded = 0"]) {
       NSLog(@"upload user:%@", [user name]);
+      [user setUploaded:[NSNumber numberWithInt:1]];
+      [user saveRemote];
+      [user save];
     }
     [myAutoreleasePool release];
     [NSThread sleepForTimeInterval:3];

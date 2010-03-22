@@ -11,10 +11,13 @@
 
 @implementation User
 
-@synthesize name;
+@synthesize name, userId;
+@synthesize uploaded;
 
 - (void)dealloc {
   [name release];
+  [userId release];
+  [uploaded release];
   [super dealloc];
 }
 

@@ -13,8 +13,11 @@
 @interface User : SQLitePersistentObject {
 
   NSString *name;
+  NSString *userId;
+  NSNumber *uploaded;
 }
 
-@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *name, *userId;
+@property (nonatomic, retain) NSNumber *uploaded;
 
 @end

@@ -191,6 +191,8 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 		if (![[NSFileManager defaultManager] fileExistsAtPath:saveDirectory]) 
 			[[NSFileManager defaultManager] createDirectoryAtPath:saveDirectory withIntermediateDirectories:YES attributes:nil error:nil];
 	}
+  
+  NSLog(databaseFilepath);
 	return databaseFilepath;
 }
 @end
