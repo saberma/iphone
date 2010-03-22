@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface iphoneAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
+  UIWindow *window;
 	UINavigationController *navigationController;
+  
+  //background upload thread
+  NSThread *uploadThread;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;

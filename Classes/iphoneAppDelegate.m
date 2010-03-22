@@ -15,8 +15,7 @@
 @synthesize navigationController;
 
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application { 	
-  
+- (void)applicationDidFinishLaunching:(UIApplication *)application {   
   window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	window.backgroundColor = [UIColor whiteColor];
 	
@@ -27,17 +26,32 @@
 	self.navigationController = aNavigationController;
 	
 	[window addSubview:[navigationController view]];
-    // Override point for customization after application launch
-    [window makeKeyAndVisible];
+  // Override point for customization after application launch
+  [window makeKeyAndVisible];
 	[userViewController release];
 	[aNavigationController release];
+  
+  uploadThread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+  [uploadThread setName:@"UploadThread"];
+  [uploadThread start];
+  [uploadThread release];
 }
 
+- (void)run{
+  while (TRUE) {
+    NSAutoreleasePool* myAutoreleasePool = [[NSAutoreleasePool alloc] init];
+    for (User *user in [User allObjects]) {
+      NSLog(@"upload user:%@", [user name]);
+    }
+    [myAutoreleasePool release];
+    [NSThread sleepForTimeInterval:3];
+  }
+}
 
 - (void)dealloc {
 	[navigationController release];
-    [window release];
-    [super dealloc];
+  [window release];
+  [super dealloc];
 }
 
 
