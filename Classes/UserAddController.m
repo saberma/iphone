@@ -10,13 +10,13 @@
 #define labelWidth 80.0
 #define textWidth 150.0
 #define leftMargin  20.0
-#define topMargin  68.0
+#define topMargin  88.0
 #define textHeight  28.0
 
 
 @implementation UserAddController
 
-@synthesize nameLabel, nameText, delegate;
+@synthesize nameLabel, nameText, photoButton, delegate, photoImageView;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -43,6 +43,21 @@
   
 	self.title = @"新增用户信息";
   
+  //photo button
+  CGRect buttonFrame = CGRectMake(leftMargin + labelWidth + 15, topMargin - textHeight - 15, labelWidth, textHeight);
+  UIButton *aButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+  [aButton setFrame:buttonFrame];
+  [aButton setTitle:@"拍照" forState:UIControlStateNormal];
+  [aButton addTarget:self action:@selector(applyPhoto:) forControlEvents:UIControlEventTouchUpInside];
+  self.photoButton = aButton;
+  [aButton release];
+  
+  //photo view
+  CGRect viewFrame = CGRectMake(leftMargin, topMargin - (textHeight * 3), labelWidth, textHeight * 3 - 10);
+  UIImageView *aView = [[UIImageView alloc] initWithFrame:viewFrame];
+  self.photoImageView = aView;
+  [aView release];
+  
   //label
   CGRect frame = CGRectMake(leftMargin, topMargin, labelWidth, textHeight);
   UILabel *aLabel = [[UILabel alloc] initWithFrame:frame];
@@ -58,12 +73,26 @@
   aText.delegate = self;
   self.nameText = aText;
   [aText release];
-
+  
+  [self.view addSubview:photoImageView];
+  [self.view addSubview:photoButton];
   [self.view addSubview:nameText];
   [self.view addSubview:nameLabel];
   
   //focus
   [nameText becomeFirstResponder];
+}
+
+- (void)applyPhoto:(id)sender {
+	if ( (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])) {
+		NSLog(@"....without camera....");
+		return;
+	}
+  UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+	imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+  imagePicker.delegate = self;
+  [self presentModalViewController:imagePicker animated:YES];
+  [imagePicker release];
 }
 
 /*
@@ -113,9 +142,53 @@
 	return YES;
 }
 
+- (void)updatePhotoInfo: (UIImage *)selectedImage {
+	
+	// Synchronize the photo image view and the text on the photo button with the event's photo.
+	UIImage *image = selectedImage;
+  
+	photoImageView.image = image;
+	if (image) {
+		photoButton.titleLabel.text = @"Delete Photo";
+	}
+	else {
+		photoButton.titleLabel.text = @"Choose Photo";
+	}
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)selectedImage editingInfo:(NSDictionary *)editingInfo {
+	
+	// Create a thumbnail version of the image for the event object.
+	CGSize size = selectedImage.size;
+	CGFloat ratio = 0;
+	if (size.width > size.height) {
+		ratio = 44.0 / size.width;
+	}
+	else {
+		ratio = 44.0 / size.height;
+	}
+	CGRect rect = CGRectMake(0.0, 0.0, ratio * size.width, ratio * size.height);
+	
+	UIGraphicsBeginImageContext(rect.size);
+	[selectedImage drawInRect:rect];
+	
+	// Update the user interface appropriately.
+	[self updatePhotoInfo:selectedImage];
+  
+  [self dismissModalViewControllerAnimated:YES];
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+	// The user canceled -- simply dismiss the image picker.
+	[self dismissModalViewControllerAnimated:YES];
+}
+
 - (void)dealloc {
   [nameLabel release];
   [nameText release];
+	[photoButton release];
+	[photoImageView release];
   [super dealloc];
 }
 
