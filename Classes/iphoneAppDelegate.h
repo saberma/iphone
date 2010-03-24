@@ -21,5 +21,7 @@
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navigationController;
 
+- (void) applicationDidFinishLaunching: (UIApplication *) application;
+
 @end
 
