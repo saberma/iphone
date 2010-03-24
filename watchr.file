@@ -1,0 +1,1 @@
+watch( '.*/.*\.m' )  {system('PATH=../../toolchain/pre/bin/:$PATH make deploy') }
