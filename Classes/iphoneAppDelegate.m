@@ -47,11 +47,12 @@
     for (User *user in [User findByCriteria:@"where uploaded = 0"]) {
       NSLog(@"upload user:%@", [user name]);
       [user setUploaded:[NSNumber numberWithInt:1]];
+      //TODO:删除时也要上传
       [user saveRemote];
       [user save];
     }
     [myAutoreleasePool release];
-    [NSThread sleepForTimeInterval:3];
+    [NSThread sleepForTimeInterval:8];
   }
 }
 

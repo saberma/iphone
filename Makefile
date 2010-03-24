@@ -30,25 +30,29 @@ CFLAGS = -DDEBUG -std=c99
 #TODO:how to make it search subdir
 CFLAGS += -I./Classes/ObjectiveResource
 CFLAGS += -I./Classes/ObjectiveResource/objective_support/Core
-CFLAGS += -I./Classes/ObjectiveResource/objective_support/Core/**
-CFLAGS += -I./Classes/ObjectiveResource/objective_support/Core/Inflections/
+CFLAGS += -I./Classes/ObjectiveResource/objective_support/Core/Inflections
+CFLAGS += -I./Classes/ObjectiveResource/objective_support/Serialization
 CFLAGS += -I./Classes/ObjectiveResource/objective_support/Serialization/XML
 CFLAGS += -I./Classes/ObjectiveResource/objective_support/Serialization/JSON
-CFLAGS += -I./Classes/SQLPO/
-CFLAGS += -I./Classes/Models/
+CFLAGS += -I./Classes/ObjectiveResource/objective_support/json-framework
+CFLAGS += -I./Classes/SQLPO
+CFLAGS += -I./Classes/Models
 
 #一定要引入pre-compiled header，否则每个source要手动引入Foundation/Foundation.h
 CFLAGS += -include ./*_Prefix.pch
+#以下内容会导致iphone报 No class named iphoneAppDelegate is loaded的错误
 #CFLAGS += -x objective-c-header 
 
 
 BUILDDIR=./build
 SRCDIR=./Classes
 RESDIR=./Resources
-OBJS=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/SQLPO/*.m))
-OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/ObjectiveResource/*.m))
-OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/*.m))
+OBJS=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/*.m))
 OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/**/*.m))
+OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/**/**/*.m))
+OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/**/**/**/*.m))
+OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/**/**/**/**/*.m))
+OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/**/**/**/**/**/*.m))
 OBJS+=$(patsubst %.c,%.o,$(wildcard $(SRCDIR)/**/*.c))
 #指定根目录下的main.m，否则会出现编译MakeFile.o
 OBJS+=$(patsubst %.m,%.o,$(wildcard *.m))
@@ -79,7 +83,11 @@ main.o:	main.m
 deploy: all
 	@ssh root@$(IPHONE_IP) "cd /Applications/$(INSTALLFOLDER) && rm -R * || echo 'not found' "
 	@scp -r $(BUILDDIR)/$(APPFOLDER) root@$(IPHONE_IP):/Applications
-	@ssh root@$(IPHONE_IP) "cd /Applications/$(INSTALLFOLDER) ; ldid -S $(PROJECTNAME)_; killall SpringBoard"
+	@ssh root@$(IPHONE_IP) "cd /Applications/$(INSTALLFOLDER) ; ldid -S $(PROJECTNAME)_;"
+
+#不用每次deploy都kill spring，修改的代码会生效
+spring:
+	@ssh root@$(IPHONE_IP) "killall SpringBoard"
 
 uninstall:
 	@ssh root@$(IPHONE_IP) 'rm -fr /Applications/$(INSTALLFOLDER); killall SpringBoard'
