@@ -11,18 +11,24 @@
 
 @protocol UserAddDelegate;
 
-@interface UserAddController : UIViewController<UITextFieldDelegate> {
+@interface UserAddController : UIViewController<UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
 
 	UILabel *nameLabel;
 	UITextField *nameText;
+	UIButton *photoButton;
   id <UserAddDelegate> delegate;
+	UIImageView *photoImageView;
 }
 
 @property (nonatomic, retain) UILabel *nameLabel;
 @property (nonatomic, retain) UITextField *nameText;
+@property (nonatomic, retain) UIButton *photoButton;
 @property (nonatomic, assign) id <UserAddDelegate> delegate;
+@property (nonatomic, retain) IBOutlet UIImageView *photoImageView;
 
-- (void) save;
+- (void)save;
+- (void)applyPhoto:(id)sender;
+- (void)updatePhotoInfo:(UIImage *)selectedImage;
 
 @end
 
