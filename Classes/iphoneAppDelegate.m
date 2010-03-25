@@ -30,7 +30,9 @@
 	[userViewController release];
 	[aNavigationController release];
   
-  uploadThread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+  /*
+   */
+  NSThread *uploadThread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
   [uploadThread setName:@"UploadThread"];
   [uploadThread start];
   [uploadThread release];
@@ -42,17 +44,25 @@
 	[ObjectiveResourceConfig setResponseType:JSONResponse];
   
   while (TRUE) {
-    NSLog(@"uploading");
-    NSAutoreleasePool* myAutoreleasePool = [[NSAutoreleasePool alloc] init];
-    for (User *user in [User findByCriteria:@"where uploaded = 0"]) {
-      NSLog(@"upload user:%@", [user name]);
-      [user setUploaded:[NSNumber numberWithInt:1]];
-      //TODO:删除时也要上传
-      [user saveRemote];
-      [user save];
+    @try {
+      NSLog(@"uploading");
+      NSAutoreleasePool* myAutoreleasePool = [[NSAutoreleasePool alloc] init];
+      for (User *user in [User findByCriteria:@"where uploaded = 0"]) {
+        NSLog(@"upload user:%@", [user name]);
+        [user setUploaded:[NSNumber numberWithInt:1]];
+        //TODO:删除时也要上传
+        [user saveRemote];
+        [user save];
+      }
+      [myAutoreleasePool release];
+      [NSThread sleepForTimeInterval:8];
     }
-    [myAutoreleasePool release];
-    [NSThread sleepForTimeInterval:8];
+    @catch (NSException * e) {
+      NSLog(@"Thread Error!");
+    }
+    @finally {
+      
+    }
   }
 }
 

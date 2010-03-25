@@ -205,8 +205,11 @@ static ORSResponseFormat _format;
 		*aError = res.error;
 	}
 	if ([res isSuccess]) {
+    /*
+     //不从服务器获取回传的数据
 		NSDictionary *newProperties = [[[self class] performSelector:[[self class] getRemoteParseDataMethod] withObject:res.body] properties];
 		[self setProperties:newProperties];
+     */
 		return YES;
 	}
 	else {
@@ -221,10 +224,13 @@ static ORSResponseFormat _format;
 		*aError = res.error;
 	}
 	if ([res isSuccess]) {
+    /*
+     //不从服务器获取回传的数据
 		if([(NSString *)[res.headers objectForKey:@"Content-Length"] intValue] > 1) {
 			NSDictionary *newProperties = [[[self class] performSelector:[[self class] getRemoteParseDataMethod] withObject:res.body] properties];
 			[self setProperties:newProperties];
 		}
+     */
 		return YES;
 	}
 	else {

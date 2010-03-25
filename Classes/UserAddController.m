@@ -163,15 +163,16 @@
 	CGSize size = selectedImage.size;
 	CGFloat ratio = 0;
 	if (size.width > size.height) {
-		ratio = 44.0 / size.width;
+		ratio = 220.0 / size.width;
 	}
 	else {
-		ratio = 44.0 / size.height;
+		ratio = 220.0 / size.height;
 	}
 	CGRect rect = CGRectMake(0.0, 0.0, ratio * size.width, ratio * size.height);
 	
 	UIGraphicsBeginImageContext(rect.size);
 	[selectedImage drawInRect:rect];
+	selectedImage = UIGraphicsGetImageFromCurrentImageContext();
 	
 	// Update the user interface appropriately.
 	[self updatePhotoInfo:selectedImage];

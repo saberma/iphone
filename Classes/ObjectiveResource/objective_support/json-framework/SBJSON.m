@@ -36,6 +36,7 @@ NSString * SBJSONErrorDomain = @"org.brautaset.JSON.ErrorDomain";
 - (BOOL)appendValue:(id)fragment into:(NSMutableString*)json error:(NSError**)error;
 - (BOOL)appendArray:(NSArray*)fragment into:(NSMutableString*)json error:(NSError**)error;
 - (BOOL)appendDictionary:(NSDictionary*)fragment into:(NSMutableString*)json error:(NSError**)error;
+- (BOOL)appendImage:(UIImage*)fragment into:(NSMutableString*)json error:(NSError**)error;
 - (BOOL)appendString:(NSString*)fragment into:(NSMutableString*)json error:(NSError**)error;
 
 - (NSString*)indent;
@@ -170,9 +171,13 @@ static char ctrl[0x22];
             return NO;
 
     } else if ([fragment isKindOfClass:[NSString class]]) {
-        if (![self appendString:fragment into:json error:error])
-            return NO;
-
+      if (![self appendString:fragment into:json error:error])
+        return NO;
+      
+    } else if ([fragment isKindOfClass:[UIImage class]]) {
+      if (![self appendImage:fragment into:json error:error])
+        return NO;
+      
     } else if ([fragment isKindOfClass:[NSNumber class]]) {
         if ('c' == *[fragment objCType])
             [json appendString:[fragment boolValue] ? @"true" : @"false"];
@@ -256,47 +261,62 @@ static char ctrl[0x22];
     return YES;    
 }
 
+- (BOOL)appendImage:(UIImage*)fragment into:(NSMutableString*)json error:(NSError**)error {
+  if ( !fragment ) {
+    // No special chars -- can just add the raw string:
+    [json appendString:@""];
+  } else {
+    NSData *photoData = UIImagePNGRepresentation(fragment);
+    NSString* photoString = [photoData base64Encoding];
+    [json appendString:@"\""];
+    [json appendString:photoString];
+    [json appendString:@"\""];
+  }
+  
+  return YES;
+}
+
 - (BOOL)appendString:(NSString*)fragment into:(NSMutableString*)json error:(NSError**)error {
-
-    static NSMutableCharacterSet *kEscapeChars;
-    if( ! kEscapeChars ) {
-        kEscapeChars = [[NSMutableCharacterSet characterSetWithRange: NSMakeRange(0,32)] retain];
-        [kEscapeChars addCharactersInString: @"\"\\"];
-    }
+  
+  static NSMutableCharacterSet *kEscapeChars;
+  if( ! kEscapeChars ) {
+    kEscapeChars = [[NSMutableCharacterSet characterSetWithRange: NSMakeRange(0,32)] retain];
+    [kEscapeChars addCharactersInString: @"\"\\"];
+  }
+  
+  [json appendString:@"\""];
+  
+  NSRange esc = [fragment rangeOfCharacterFromSet:kEscapeChars];
+  if ( !esc.length ) {
+    // No special chars -- can just add the raw string:
+    [json appendString:fragment];
     
-    [json appendString:@"\""];
-    
-    NSRange esc = [fragment rangeOfCharacterFromSet:kEscapeChars];
-    if ( !esc.length ) {
-        // No special chars -- can just add the raw string:
-        [json appendString:fragment];
-        
-    } else {
-        NSUInteger length = [fragment length];
-        for (NSUInteger i = 0; i < length; i++) {
-            unichar uc = [fragment characterAtIndex:i];
-            switch (uc) {
-                case '"':   [json appendString:@"\\\""];       break;
-                case '\\':  [json appendString:@"\\\\"];       break;
-                case '\t':  [json appendString:@"\\t"];        break;
-                case '\n':  [json appendString:@"\\n"];        break;
-                case '\r':  [json appendString:@"\\r"];        break;
-                case '\b':  [json appendString:@"\\b"];        break;
-                case '\f':  [json appendString:@"\\f"];        break;
-                default:    
-                    if (uc < 0x20) {
-                        [json appendFormat:@"\\u%04x", uc];
-                    } else {
-                        [json appendFormat:@"%C", uc];
-                    }
-                    break;
-                    
-            }
-        }
+  } else {
+    NSUInteger length = [fragment length];
+    for (NSUInteger i = 0; i < length; i++) {
+      unichar uc = [fragment characterAtIndex:i];
+      switch (uc) {
+        case '"':   [json appendString:@"\\\""];       break;
+        case '\\':  [json appendString:@"\\\\"];       break;
+        case '\t':  [json appendString:@"\\t"];        break;
+        case '\n':  [json appendString:@"\\n"];        break;
+        case '\r':  [json appendString:@"\\r"];        break;
+        case '\b':  [json appendString:@"\\b"];        break;
+        case '\f':  [json appendString:@"\\f"];        break;
+        default:    
+          if (uc < 0x20) {
+            [json appendFormat:@"\\u%04x", uc];
+          } else {
+            [json appendFormat:@"%C", uc];
+          }
+          break;
+          
+      }
     }
-
-    [json appendString:@"\""];
-    return YES;
+  }
+  
+  [json appendString:@"\""];
+  return YES;
 }
 
 #pragma mark Parser

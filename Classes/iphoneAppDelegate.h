@@ -13,9 +13,6 @@
 @interface iphoneAppDelegate : NSObject <UIApplicationDelegate> {
   UIWindow *window;
 	UINavigationController *navigationController;
-  
-  //background upload thread
-  NSThread *uploadThread;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
