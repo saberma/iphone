@@ -13,11 +13,13 @@
 
 @synthesize name, userId;
 @synthesize uploaded;
+@synthesize photo;
 
 - (void)dealloc {
   [name release];
   [userId release];
   [uploaded release];
+  [photo release];
   [super dealloc];
 }
 

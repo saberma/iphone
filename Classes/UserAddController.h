@@ -12,7 +12,7 @@
 @protocol UserAddDelegate;
 
 @interface UserAddController : UIViewController<UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
-
+  User *user;
 	UILabel *nameLabel;
 	UITextField *nameText;
 	UIButton *photoButton;
@@ -20,6 +20,7 @@
 	UIImageView *photoImageView;
 }
 
+@property (nonatomic, retain) User *user;
 @property (nonatomic, retain) UILabel *nameLabel;
 @property (nonatomic, retain) UITextField *nameText;
 @property (nonatomic, retain) UIButton *photoButton;

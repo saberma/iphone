@@ -16,7 +16,7 @@
 
 @implementation UserAddController
 
-@synthesize nameLabel, nameText, photoButton, delegate, photoImageView;
+@synthesize user, nameLabel, nameText, photoButton, delegate, photoImageView;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -41,7 +41,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
   
-	self.title = @"新增用户信息";
+	self.title = [NSString stringWithFormat:@"%@用户", user.pk > -1 ? @"修改" : @"新增"];
   
   //photo button
   CGRect buttonFrame = CGRectMake(leftMargin + labelWidth + 15, topMargin - textHeight - 15, labelWidth, textHeight);
@@ -74,22 +74,32 @@
   self.nameText = aText;
   [aText release];
   
+  //save button
+  UIBarButtonItem *saveButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStyleDone target:self action:@selector(save)];
+  self.navigationItem.rightBarButtonItem = saveButtonItem;
+  [saveButtonItem release];
+  
   [self.view addSubview:photoImageView];
   [self.view addSubview:photoButton];
   [self.view addSubview:nameText];
   [self.view addSubview:nameLabel];
+  
+  //show user info while edit
+  self.nameText.text = [user name];
+  self.photoImageView.image = [user photo];
   
   //focus
   [nameText becomeFirstResponder];
 }
 
 - (void)applyPhoto:(id)sender {
+  UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
 	if ( (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])) {
 		NSLog(@"....without camera....");
-		return;
-	}
-  UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-	imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+	}else {
+    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+  }
+
   imagePicker.delegate = self;
   [self presentModalViewController:imagePicker animated:YES];
   [imagePicker release];
@@ -117,13 +127,13 @@
 
 //保存数据
 - (void)save {
-  User *user = [[User alloc] init];
   [user setName:nameText.text];
   [user setUploaded:[NSNumber numberWithInt:0]];
+  [user setPhoto:photoImageView.image];
   [user save];
-  [user release];
   
   [self.delegate userAddController:self didAdd:user];
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -
@@ -137,8 +147,6 @@
     [self save];
   }
   
-  [self.navigationController popViewControllerAnimated:YES];
-  
 	return YES;
 }
 
@@ -146,14 +154,7 @@
 	
 	// Synchronize the photo image view and the text on the photo button with the event's photo.
 	UIImage *image = selectedImage;
-  
 	photoImageView.image = image;
-	if (image) {
-		photoButton.titleLabel.text = @"Delete Photo";
-	}
-	else {
-		photoButton.titleLabel.text = @"Choose Photo";
-	}
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)selectedImage editingInfo:(NSDictionary *)editingInfo {
@@ -185,6 +186,7 @@
 }
 
 - (void)dealloc {
+  [user  release];
   [nameLabel release];
   [nameText release];
 	[photoButton release];
