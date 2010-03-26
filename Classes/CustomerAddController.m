@@ -1,12 +1,12 @@
 //
-//  UserAddController.m
+//  CustomerAddController.m
 //  iphone
 //
 //  Created by  cogent on 10-3-19.
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "UserAddController.h"
+#import "CustomerAddController.h"
 #define labelWidth 80.0
 #define textWidth 150.0
 #define leftMargin  20.0
@@ -14,9 +14,9 @@
 #define textHeight  28.0
 
 
-@implementation UserAddController
+@implementation CustomerAddController
 
-@synthesize user, nameLabel, nameText, photoButton, delegate, photoImageView;
+@synthesize customer, nameLabel, nameText, photoButton, delegate, photoImageView;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -41,7 +41,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
   
-	self.title = [NSString stringWithFormat:@"%@用户", user.pk > -1 ? @"修改" : @"新增"];
+	self.title = [NSString stringWithFormat:@"%@客户", customer.pk > -1 ? @"修改" : @"新增"];
   
   //photo button
   CGRect buttonFrame = CGRectMake(leftMargin + labelWidth + 15, topMargin - textHeight - 15, labelWidth, textHeight);
@@ -61,7 +61,7 @@
   //label
   CGRect frame = CGRectMake(leftMargin, topMargin, labelWidth, textHeight);
   UILabel *aLabel = [[UILabel alloc] initWithFrame:frame];
-  [aLabel setText:@"用户名"];
+  [aLabel setText:@"客户名"];
   self.nameLabel = aLabel;
   [aLabel release];
    
@@ -84,9 +84,9 @@
   [self.view addSubview:nameText];
   [self.view addSubview:nameLabel];
   
-  //show user info while edit
-  self.nameText.text = [user name];
-  self.photoImageView.image = [user photo];
+  //show customer info while edit
+  self.nameText.text = [customer name];
+  self.photoImageView.image = [customer photo];
   
   //focus
   [nameText becomeFirstResponder];
@@ -127,12 +127,13 @@
 
 //保存数据
 - (void)save {
-  [user setName:nameText.text];
-  [user setUploaded:[NSNumber numberWithInt:0]];
-  [user setPhoto:photoImageView.image];
-  [user save];
+  [customer setName:nameText.text];
+  [customer setUploaded:[NSNumber numberWithInt:0]];
+  [customer setDeleted:[NSNumber numberWithInt:0]];
+  [customer setPhoto:photoImageView.image];
+  [customer save];
   
-  [self.delegate userAddController:self didAdd:user];
+  [self.delegate customerAddController:self didAdd:customer];
   [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -142,7 +143,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
   if (textField == nameText) {
-    // the user pressed the "Done" button, so dismiss the keyboard
+    // the customer pressed the "Done" button, so dismiss the keyboard
     [nameText resignFirstResponder];
     [self save];
   }
@@ -174,7 +175,7 @@
 	[selectedImage drawInRect:rect];
 	selectedImage = UIGraphicsGetImageFromCurrentImageContext();
 	
-	// Update the user interface appropriately.
+	// Update the customer interface appropriately.
 	[self updatePhotoInfo:selectedImage];
   
   [self dismissModalViewControllerAnimated:YES];
@@ -182,12 +183,12 @@
 
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-	// The user canceled -- simply dismiss the image picker.
+	// The customer canceled -- simply dismiss the image picker.
 	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (void)dealloc {
-  [user  release];
+  [customer  release];
   [nameLabel release];
   [nameText release];
 	[photoButton release];

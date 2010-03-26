@@ -1,5 +1,5 @@
 //
-//  User.h
+//  Customer.h
 //  iphone
 //
 //  Created by  cogent on 10-3-22.
@@ -10,16 +10,16 @@
 #import "SQLitePersistentObject.h"
 
 
-@interface User : SQLitePersistentObject {
+@interface Customer : SQLitePersistentObject {
 
   NSString *name;
-  NSNumber *userId, *uploaded;
+  NSNumber *customerId, *uploaded, *deleted;
   UIImage *photo;
 }
 
-//userId is for objectresource
+//customerId is for objectresource
 @property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSNumber *userId, *uploaded;
+@property (nonatomic, retain) NSNumber *customerId, *uploaded, *deleted;
 
 @property (nonatomic, retain) UIImage *photo;
 

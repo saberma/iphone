@@ -1,17 +1,17 @@
 //
-//  UserViewController.m
+//  CustomerViewController.m
 //  iphone
 //
 //  Created by  cogent on 10-3-19.
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "UserViewController.h"
+#import "CustomerViewController.h"
 
 
-@implementation UserViewController
+@implementation CustomerViewController
 
-@synthesize usersArray;
+@synthesize customersArray;
 @synthesize	addButton;
 
 /*
@@ -25,23 +25,23 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-	self.title = @"用户";
+	self.title = @"客户";
 	
   //[self.editButtonItem setTitle:@"修改"];
 	self.navigationItem.leftBarButtonItem = self.editButtonItem;
 	
-	addButton = [[UIBarButtonItem alloc] initWithTitle:@"新增" style:UIBarButtonItemStylePlain target:self action:@selector(addUser)];
+	addButton = [[UIBarButtonItem alloc] initWithTitle:@"新增" style:UIBarButtonItemStylePlain target:self action:@selector(addCustomer)];
 	self.navigationItem.rightBarButtonItem = addButton;
   
   
   
-  self.usersArray = [[User allObjects] mutableCopy];
+  self.customersArray = [[Customer allObjects] mutableCopy];
 }
 
-- (void)addUser {
-	UserAddController *addController = [[UserAddController alloc] init];
-  User *user = [[User alloc] init];
-  [addController setUser:user];
+- (void)addCustomer {
+	CustomerAddController *addController = [[CustomerAddController alloc] init];
+  Customer *customer = [[Customer alloc] init];
+  [addController setCustomer:customer];
   [addController setDelegate:self];
   
 	[self.navigationController pushViewController:addController animated:YES];
@@ -86,7 +86,7 @@
 }
 
 - (void)viewDidUnload {
-	self.usersArray = nil;
+	self.customersArray = nil;
 	self.addButton = nil;
 }
 
@@ -100,7 +100,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return [usersArray count];
+  return [customersArray count];
 }
 
 
@@ -117,9 +117,9 @@
   
   // Set up the cell...
   NSInteger row = [indexPath row];
-  User *user = (User *)[usersArray objectAtIndex:row];
-  cell.textLabel.text = [user name];
-  cell.imageView.image = [user photo];
+  Customer *customer = (Customer *)[customersArray objectAtIndex:row];
+  cell.textLabel.text = [customer name];
+  cell.imageView.image = [customer photo];
 	
   return cell;
 }
@@ -127,8 +127,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   // Navigation logic may go here. Create and push another view controller.
-	UserAddController *addController = [[UserAddController alloc] init];
-  addController.user = [usersArray objectAtIndex:indexPath.row];
+	CustomerAddController *addController = [[CustomerAddController alloc] init];
+  addController.customer = [customersArray objectAtIndex:indexPath.row];
   [self.navigationController pushViewController:addController animated:YES];
   [addController release];
 }
@@ -147,10 +147,12 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
   
   if (editingStyle == UITableViewCellEditingStyleDelete) {
-    User *user = (User *)[self.usersArray objectAtIndex:indexPath.row];
-    [user deleteObject];
+    Customer *customer = (Customer *)[self.customersArray objectAtIndex:indexPath.row];
+    [customer setUploaded:[NSNumber numberWithInt:0]];
+    [customer setDeleted:[NSNumber numberWithInt:1]];
+    [customer save];
     
-    [self.usersArray removeObjectAtIndex:indexPath.row];
+    [self.customersArray removeObjectAtIndex:indexPath.row];
     
     // Delete the row from the data source
     [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
@@ -176,14 +178,14 @@
  }
  */
 
-- (void) userAddController:(UserAddController *)userAddController didAdd:(User *)user {
-  [[self usersArray] addObject:user];
-  //close add user controller
+- (void) customerAddController:(CustomerAddController *)customerAddController didAdd:(Customer *)customer {
+  [[self customersArray] addObject:customer];
+  //close add customer controller
   [self dismissModalViewControllerAnimated:YES];
 }
 
 - (void)dealloc {
-	[usersArray release];
+	[customersArray release];
 	[addButton release];
   [super dealloc];
 }

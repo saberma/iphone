@@ -1,5 +1,5 @@
 //
-//  UserAddController.h
+//  CustomerAddController.h
 //  iphone
 //
 //  Created by  cogent on 10-3-19.
@@ -7,24 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "User.h"
+#import "Customer.h"
 
-@protocol UserAddDelegate;
+@protocol CustomerAddDelegate;
 
-@interface UserAddController : UIViewController<UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
-  User *user;
+@interface CustomerAddController : UIViewController<UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
+  Customer *customer;
 	UILabel *nameLabel;
 	UITextField *nameText;
 	UIButton *photoButton;
-  id <UserAddDelegate> delegate;
+  id <CustomerAddDelegate> delegate;
 	UIImageView *photoImageView;
 }
 
-@property (nonatomic, retain) User *user;
+@property (nonatomic, retain) Customer *customer;
 @property (nonatomic, retain) UILabel *nameLabel;
 @property (nonatomic, retain) UITextField *nameText;
 @property (nonatomic, retain) UIButton *photoButton;
-@property (nonatomic, assign) id <UserAddDelegate> delegate;
+@property (nonatomic, assign) id <CustomerAddDelegate> delegate;
 @property (nonatomic, retain) IBOutlet UIImageView *photoImageView;
 
 - (void)save;
@@ -34,8 +34,8 @@
 @end
 
 
-@protocol UserAddDelegate <NSObject>
+@protocol CustomerAddDelegate <NSObject>
 
-- (void)userAddController:(UserAddController *) userAddController didAdd:(User *)user;
+- (void)customerAddController:(CustomerAddController *) customerAddController didAdd:(Customer *)customer;
 
 @end

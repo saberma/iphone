@@ -1,24 +1,25 @@
 //
-//  User.m
+//  Customer.m
 //  iphone
 //
 //  Created by  cogent on 10-3-22.
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "User.h"
+#import "Customer.h"
 
 
-@implementation User
+@implementation Customer
 
-@synthesize name, userId;
-@synthesize uploaded;
+@synthesize name, customerId;
+@synthesize uploaded, deleted;
 @synthesize photo;
 
 - (void)dealloc {
   [name release];
-  [userId release];
+  [customerId release];
   [uploaded release];
+  [deleted release];
   [photo release];
   [super dealloc];
 }

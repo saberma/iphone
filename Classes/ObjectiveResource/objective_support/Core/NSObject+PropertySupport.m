@@ -54,7 +54,10 @@
 
 - (void)setProperties:(NSDictionary *)overrideProperties {
 	for (NSString *property in [overrideProperties allKeys]) {
-		[self setValue:[overrideProperties objectForKey:property] forKey:property];
+    // mahb modify only update id
+    if ([property hasSuffix:@"Id"]) {
+      [self setValue:[overrideProperties objectForKey:property] forKey:property];
+    }
 	}
 }
 

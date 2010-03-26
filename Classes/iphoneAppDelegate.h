@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ObjectiveResource.h"
-#import "UserViewController.h"
+#import "CustomerViewController.h"
 
 @interface iphoneAppDelegate : NSObject <UIApplicationDelegate> {
   UIWindow *window;

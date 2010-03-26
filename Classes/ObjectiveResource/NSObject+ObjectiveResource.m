@@ -157,8 +157,8 @@ static ORSResponseFormat _format;
 
 // Converts the object to the data format expected by the server
 - (NSString *)convertToRemoteExpectedType {
-	// exclude id , created_at , updated_at
-	NSArray	 *defaultExclusions = [NSArray arrayWithObjects:[self getRemoteClassIdName],@"createdAt",@"updatedAt",nil];
+	// exclude id , created_at , updated_at, uploaded, deleted
+	NSArray	 *defaultExclusions = [NSArray arrayWithObjects:[self getRemoteClassIdName],@"createdAt",@"updatedAt", @"uploaded", @"deleted", nil];
 	return [self performSelector:[[self class] getRemoteSerializeMethod] withObject:defaultExclusions];
 }
 
@@ -205,12 +205,9 @@ static ORSResponseFormat _format;
 		*aError = res.error;
 	}
 	if ([res isSuccess]) {
-    /*
-     //不从服务器获取回传的数据
+    //不从服务器获取回传的数据
 		NSDictionary *newProperties = [[[self class] performSelector:[[self class] getRemoteParseDataMethod] withObject:res.body] properties];
-		[self setProperties:newProperties];
-     */
-		return YES;
+		[self setProperties:newProperties];		return YES;
 	}
 	else {
 		return NO;
